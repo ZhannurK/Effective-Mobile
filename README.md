@@ -32,9 +32,20 @@ docker-nginx-webapp/
 ├── nginx/
 │   └── nginx.conf          # Nginx reverse proxy configuration
 ├── docker-compose.yml      # Service orchestration configuration
+├── .env                    # Environment variables (not committed to git)
 ├── .gitignore              # Git ignore rules
 └── README.md               # This file
 ```
+
+## Environment Variables
+
+Configuration is managed via `.env` file:
+
+| Variable       | Default       | Description                        |
+|----------------|---------------|------------------------------------|
+| `BACKEND_PORT` | `8080`        | Port the backend listens on        |
+| `NGINX_PORT`   | `80`          | Host port exposed by nginx         |
+| `NETWORK_NAME` | `app-network` | Name of the internal Docker network |
 
 ## Getting Started
 
