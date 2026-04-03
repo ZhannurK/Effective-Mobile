@@ -2,10 +2,12 @@ services:
   backend:
     build: ./backend
     container_name: backend-app
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT}
     networks:
-      - ${NETWORK_NAME}
+      - app-network
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:${BACKEND_PORT}')"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:${BACKEND_PORT}')\""]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -19,16 +21,17 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     networks:
-      - ${NETWORK_NAME}
+      - app-network
     depends_on:
       backend:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
+      test: ["CMD-SHELL", "wget -q --spider http://localhost || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
 
 networks:
-  ${NETWORK_NAME}:
+  app-network:
+    name: ${NETWORK_NAME}
     driver: bridge

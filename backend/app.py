@@ -4,12 +4,13 @@ Simple HTTP server for Effective Mobile DevOps test assignment.
 Responds with "Hello from Effective Mobile!" on GET / requests.
 """
 
+import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 class RequestHandler(BaseHTTPRequestHandler):
     """Handler for HTTP requests."""
-    
+
     def do_GET(self):
         """Handle GET requests to the root path."""
         if self.path == '/':
@@ -22,14 +23,15 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Type', 'text/plain')
             self.end_headers()
             self.wfile.write(b'Not Found')
-    
+
     def log_message(self, format, *args):
         """Log HTTP requests to stdout."""
         print(f"{self.address_string()} - [{self.log_date_time_string()}] {format % args}")
 
 
-def run_server(port=8080):
-    """Start the HTTP server on the specified port."""
+def run_server():
+    """Start the HTTP server on the port specified by BACKEND_PORT env variable."""
+    port = int(os.environ.get('BACKEND_PORT', 8080))
     server_address = ('', port)
     httpd = HTTPServer(server_address, RequestHandler)
     print(f'Starting HTTP server on port {port}...')

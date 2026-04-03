@@ -1,20 +1,19 @@
-# Use official Python 3.11 slim image as base
-FROM python:3.11-slim
+FROM python:3.11-slim AS builder
 
-# Set working directory
 WORKDIR /app
 
-# Create non-root user with UID 1000
+COPY app.py .
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
 RUN useradd -m -u 1000 appuser && chown appuser:appuser /app
 
-# Copy application file with proper ownership
-COPY --chown=appuser:appuser app.py .
+COPY --from=builder --chown=appuser:appuser /app/app.py .
 
-# Switch to non-root user
 USER appuser
 
-# Document the port the application listens on
 EXPOSE 8080
 
-# Run the application
 CMD ["python", "app.py"]
